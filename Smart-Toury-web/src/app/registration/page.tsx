@@ -3,13 +3,13 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Header } from "@/app/components/layout/Header";
+import { Header } from "@/components/layout/Header";
 import { useState } from "react";
-import Stepper from "@/app/components/Stepper";
+import Stepper from "@/components/Stepper";
 import { PatternFormat } from "react-number-format";
-import Rule from "@/app/components/Rule";
+import Rule from "@/components/Rule";
 import { validatePassword } from "@/lib/utils/validatePassword";
-import PasswordInput from "@/app/components/PasswordInput";
+import PasswordInput from "@/components/PasswordInput";
 export default function RegisterPage() {
 
   const [step, setStep] = useState(1);

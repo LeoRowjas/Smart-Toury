@@ -1,6 +1,6 @@
 
 import Image from 'next/image'
-import { Header } from "@/app/components/layout/Header";
+import { Header } from "@/components/layout/Header";
 export default function page() {
   return (
     <div>
