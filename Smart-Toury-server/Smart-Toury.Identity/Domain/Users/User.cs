@@ -23,6 +23,11 @@ internal class User
             PhoneNumber = phone
         };
     }
+
+    public bool VerifyPassword(string password)
+    {
+        return BCrypt.Net.BCrypt.Verify(PasswordHash, password);
+    }
 }
 
 internal enum Gender

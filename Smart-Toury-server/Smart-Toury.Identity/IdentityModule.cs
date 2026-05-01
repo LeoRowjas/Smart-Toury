@@ -4,8 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Smart_Toury.Identity.Features.LoginUser;
 using Smart_Toury.Identity.Features.RegisterUser;
-using Smart_Toury.Identity.Infrastructure.Database;
+using Smart_Toury.Identity.Infrastructure;
 
 namespace Smart_Toury.Identity;
 
@@ -18,6 +19,8 @@ public static class IdentityModule
         
         services.AddDbContext<IdentityDbContext>(o => 
             o.UseNpgsql(cfg.GetConnectionString("DefaultConnection")));
+
+        services.AddScoped<JwtTokenService>();
         
         return services;
     }
@@ -25,7 +28,7 @@ public static class IdentityModule
     public static IEndpointRouteBuilder MapIdentityModule(this IEndpointRouteBuilder app)
     {
         RegisterUserEndpoint.MapEndpoint(app);
-        var group = app.MapGroup("/users").WithTags("Identity");
+        LoginUserEndpoint.MapEndpoint(app);
         
         return app;
     }

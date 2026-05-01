@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using Smart_Toury.Identity.Infrastructure.Database;
+using Smart_Toury.Identity.Infrastructure;
 using SmartToury.SharedKernel;
 
 namespace Smart_Toury.Identity.Features.RegisterUser;
