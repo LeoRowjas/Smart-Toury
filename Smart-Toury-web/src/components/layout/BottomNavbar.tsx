@@ -2,16 +2,17 @@
 
 import { usePathname } from "next/navigation";
 import { Home, Map, Heart, User } from "lucide-react";
+import Link from "next/link";
 
 export default function BottomNavbar() {
   const pathname = usePathname();
 
 
   const items = [
-    { icon: Home, label: "Главная" },
-    { icon: Map, label: "Карта" },
-    { icon: Heart, label: "Избранное" },
-    { icon: User, label: "Профиль" },
+  { icon: Home, label: "Главная", href: "/" },
+  { icon: Map, label: "Карта", href: "/map" },
+  { icon: Heart, label: "Избранное", href: "/favorites" },
+  { icon: User, label: "Профиль", href: "/profile" },
   ];
 
   return (
@@ -28,16 +29,18 @@ export default function BottomNavbar() {
         <div className="grid grid-cols-4 text-center text-xs">
           {items.map((item, i) => {
             const Icon = item.icon;
+
             return (
-              <div
+              <Link
                 key={i}
+                href={item.href}
                 className={`py-2 flex flex-col items-center border-gray-200 ${
                   i !== items.length - 1 ? "border-r" : ""
                 }`}
               >
                 <Icon size={20} />
                 <span>{item.label}</span>
-              </div>
+              </Link>
             );
           })}
         </div>
