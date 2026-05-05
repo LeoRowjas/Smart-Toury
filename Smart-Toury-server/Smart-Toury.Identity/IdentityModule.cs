@@ -1,11 +1,16 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Smart_Toury.Identity.Features.GetProfile;
 using Smart_Toury.Identity.Features.LoginUser;
 using Smart_Toury.Identity.Features.RegisterUser;
+using Smart_Toury.Identity.Features.RefreshSession;
 using Smart_Toury.Identity.Infrastructure;
 
 namespace Smart_Toury.Identity;
@@ -14,6 +19,8 @@ public static class IdentityModule
 {
     public static IServiceCollection AddIdentityModule(this IServiceCollection services, IConfiguration cfg)
     {
+        services.AddHttpContextAccessor();
+        
         services.AddMediatR(config => 
             config.RegisterServicesFromAssembly(typeof(IdentityModule).Assembly));
         
@@ -29,6 +36,9 @@ public static class IdentityModule
     {
         RegisterUserEndpoint.MapEndpoint(app);
         LoginUserEndpoint.MapEndpoint(app);
+        RefreshSessionEndpoint.MapEndpoint(app);
+        GetTouristProfileEndpoint.MapEndpoint(app);
+        GetGuideProfileEndpoint.MapEndpoint(app);
         
         return app;
     }

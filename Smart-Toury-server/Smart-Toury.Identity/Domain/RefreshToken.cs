@@ -7,7 +7,6 @@ internal class RefreshToken
     public string Token { get; set; } = null!;
     
     public DateTime ExpiresAt { get; set; }
-    public bool IsRevoked { get; set; }
 
     private RefreshToken() { }
 
@@ -16,11 +15,8 @@ internal class RefreshToken
         Id = Guid.NewGuid(),
         UserId = userId,
         Token = token,
-        ExpiresAt = DateTime.UtcNow.AddDays(30),
-        IsRevoked = false,
+        ExpiresAt = DateTime.UtcNow.AddDays(30)
     };
     
     public bool IsExpired => DateTime.UtcNow > ExpiresAt;
-    
-    public void Revoke() => IsRevoked = true;
 }

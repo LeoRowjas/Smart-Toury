@@ -24,7 +24,7 @@ internal class LoginUserFeature(IdentityDbContext dbContext, JwtTokenService jwt
         if (user == null || !user.VerifyPassword(request.password))
             return Result<LoginResponse>.Failure("Incorrect password");
 
-        var accessToken = jwtService.GenerateAccessToken(user.Id, user.Email);
+        var accessToken = jwtService.GenerateAccessToken(user.Id, user.Email, user.Role);
         var refreshTokenValue = jwtService.GenerateRefreshToken();
 
         var refreshToken = RefreshToken.Create(user.Id, refreshTokenValue);
@@ -46,7 +46,7 @@ internal static class LoginUserEndpoint
 {
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/identity/login", async (LoginUserCommand request, IMediator mediator, CancellationToken ct) =>
+        app.MapPost("/api/auth/sessions", async (LoginUserCommand request, IMediator mediator, CancellationToken ct) =>
         {
             var loginResponse = await mediator
                 .Send(new LoginUserCommand(request.email, request.password), ct);

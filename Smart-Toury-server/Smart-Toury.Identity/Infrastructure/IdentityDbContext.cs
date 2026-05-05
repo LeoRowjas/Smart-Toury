@@ -9,30 +9,13 @@ internal class IdentityDbContext(DbContextOptions<IdentityDbContext> options)
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken>  RefreshTokens => Set<RefreshToken>();
+    public DbSet<TouristProfile> TouristProfiles => Set<TouristProfile>();
+    public DbSet<GuideProfile> GuideProfiles => Set<GuideProfile>();
 
     protected override void OnModelCreating(ModelBuilder mb)
     {
         mb.HasDefaultSchema("identity");
-        mb.Entity<User>(e =>
-        {
-            e.HasKey(u => u.Id);
-            e.HasIndex(u => u.Email).IsUnique();
-            e.Property(u => u.Email)
-                .IsRequired()
-                .HasMaxLength(256);
-            e.Property(u => u.PasswordHash)
-                .IsRequired();
-        });
-
-        mb.Entity<RefreshToken>(e =>
-        {
-            e.HasKey(r => r.Id);
-            e.Property(r => r.Token).IsRequired();
-            e.Property(r => r.ExpiresAt).IsRequired();
-            e.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
+        mb.ApplyConfigurationsFromAssembly(typeof(IdentityDbContext).Assembly);
+        
     }
 }
