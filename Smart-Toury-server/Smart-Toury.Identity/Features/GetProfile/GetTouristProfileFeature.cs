@@ -27,7 +27,7 @@ internal class GetTouristProfileFeature(IdentityDbContext db, IHttpContextAccess
         
         var profile = await db.TouristProfiles
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(u => u.UserId == userId, cancellationToken);
         
         return Result<TouristProfile>.Success(profile);
     }
