@@ -10,19 +10,55 @@ import { PatternFormat } from "react-number-format";
 import Rule from "@/components/Rule";
 import { validatePassword } from "@/lib/utils/validatePassword";
 import PasswordInput from "@/components/PasswordInput";
+import { registerUser } from "@/lib/api/auth";
+import { useRouter } from "next/navigation";
+
 export default function RegisterPage() {
 
+  
   const [step, setStep] = useState(1);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [agree, setAgree] = useState(false);
   const [news, setNews] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const { hasLength, hasUpper, hasNumber } = validatePassword(password);
 
   const match = password === confirm && password.length > 0;
 
   const isValid = hasLength && hasUpper && hasNumber && match;
+
+  const handleRegister = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const result = await registerUser({
+        name,
+        email,
+        password,
+      });
+
+      console.log("Успешная регистрация:", result);
+
+      router.push("/auth");
+
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Ошибка регистрации");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -39,11 +75,15 @@ export default function RegisterPage() {
 
           <p className='text-[#2C3E50] font-bold text-2xl mb-2'>Как вас зовут?</p>
           <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Введите имя"
             className="w-full border p-3 rounded mb-3"
           />
           <p className='text-[#2C3E50] font-bold text-2xl mb-2'>Email адрес</p>
           <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="example@mail.com"
             className="w-full border p-3 rounded mb-3"
           />
@@ -53,6 +93,10 @@ export default function RegisterPage() {
             <p className="text-[#7F8C8D] text-[14px]">(необязательно)</p>
           </div>
         <PatternFormat
+          value={phone}
+          onValueChange={(values) => {
+            setPhone(values.value);
+          }}
           format="+7 (###) ###-##-##"
           placeholder="+7 (___) ___-__-__"
           mask="_"
@@ -280,15 +324,22 @@ export default function RegisterPage() {
       </div>
     </label>
 
+    {error && (
+      <p className="text-red-500 text-sm mt-4">
+        {error}
+      </p>
+    )}
+
     <button
-      disabled={!agree}
+      disabled={!agree || loading}
+      onClick={handleRegister}
       className={`w-full mt-6 py-4 rounded-xl text-white text-lg transition-colors duration-200 ${
         agree
           ? "bg-[#2f5d59]"
           : "bg-gray-300 cursor-not-allowed"
       }`}
     >
-      Подтвердить
+      {loading ? "Регистрация..." : "Подтвердить"}
     </button>
     </div>
       )}

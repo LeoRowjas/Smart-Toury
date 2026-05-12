@@ -1,7 +1,38 @@
+"use client";
 
 import Image from 'next/image'
 import { Header } from "@/components/layout/Header";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function page() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const router = useRouter();
+
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      console.log({
+        email,
+        password,
+      });
+
+      router.push("/tourist");
+
+    } catch (err: any) {
+      setError("Ошибка входа");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <Header></Header>
@@ -13,21 +44,31 @@ export default function page() {
       
                 <p className='text-[#2C3E50] font-bold text-2xl mb-2'>Email адрес</p>
                 <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="example@email.com"
                   className="w-full border p-3 rounded mb-3"
                 />
                 <p className='text-[#2C3E50] font-bold text-2xl mb-2'>Пароль</p>
                 <input
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Введите пароль"
                   type='password'
                   className="w-full border p-3 rounded mb-3"
                 />
               
-      
+                {error && (
+                  <p className="text-red-500 text-sm mb-4">
+                    {error}
+                  </p>
+                )}
                 <button
+                  onClick={handleLogin}
+                  disabled={loading}
                   className="w-full bg-[#2f5d59] text-white py-3 rounded-xl mt-2 font-semibold text-2xl"
                 >
-                  Продолжить
+                  {loading ? "Вход..." : "Продолжить"}
                 </button>
       
                 <div className="flex items-center gap-4 my-6">
