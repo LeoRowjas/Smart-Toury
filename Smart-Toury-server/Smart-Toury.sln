@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart-Toury.Identity", "Sma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartToury.SharedKernel", "SmartToury.SharedKernel\SmartToury.SharedKernel.csproj", "{0AE000BE-646E-4F8D-913C-1810AC943AAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Smart-Toury.Tours", "Smart-Toury.Tours\Smart-Toury.Tours.csproj", "{AF79DA9A-02B8-4E49-BBA8-75C72A57A4F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,8 +28,13 @@ Global
 		{0AE000BE-646E-4F8D-913C-1810AC943AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AE000BE-646E-4F8D-913C-1810AC943AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AE000BE-646E-4F8D-913C-1810AC943AAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF79DA9A-02B8-4E49-BBA8-75C72A57A4F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF79DA9A-02B8-4E49-BBA8-75C72A57A4F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF79DA9A-02B8-4E49-BBA8-75C72A57A4F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF79DA9A-02B8-4E49-BBA8-75C72A57A4F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E62DC926-6042-4D54-BFC1-A4DC8EF37950} = {14E61D78-697B-4552-B0B1-B8B8C252BA12}
+		{AF79DA9A-02B8-4E49-BBA8-75C72A57A4F1} = {14E61D78-697B-4552-B0B1-B8B8C252BA12}
 	EndGlobalSection
 EndGlobal

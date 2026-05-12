@@ -14,16 +14,17 @@ namespace Smart_Toury.Identity.Features.GetProfile;
 internal record GetTouristProfileCommand() : IRequest<Result<TouristProfile>>;
 
 
-internal class GetTouristProfileFeature(IdentityDbContext db, IHttpContextAccessor httpContextAccessor, JwtTokenService jwtService) 
+internal class GetTouristProfileFeature(IdentityDbContext db, ICurrentUser currentUser, JwtTokenService jwtService) 
     : IRequestHandler<GetTouristProfileCommand, Result<TouristProfile>>
 {
     public async Task<Result<TouristProfile>> Handle
         (GetTouristProfileCommand request, CancellationToken cancellationToken)
     {
-        var userId = jwtService.GetUserId(httpContextAccessor.HttpContext!.User);
-        
+        var userId = currentUser.UserId;
         if(!db.Users.Any(u => u.Id == userId))
             return Result<TouristProfile>.Failure("User not found");
+        if(db.Users.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken).Result!.Role != UserRole.Tourist)
+            return Result<TouristProfile>.Failure("User is not tourist");
         
         var profile = await db.TouristProfiles
             .AsNoTracking()

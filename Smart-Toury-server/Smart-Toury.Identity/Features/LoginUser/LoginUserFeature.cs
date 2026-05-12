@@ -10,18 +10,18 @@ using SmartToury.SharedKernel;
 namespace Smart_Toury.Identity.Features.LoginUser;
 
 
-internal record LoginUserCommand(string email, string password) : IRequest<Result<LoginResponse>>;
+internal record LoginUserCommand(LoginRequest Request) : IRequest<Result<LoginResponse>>;
 
 
 internal class LoginUserFeature(IdentityDbContext dbContext, JwtTokenService jwtService, IMediator mediator)
     : IRequestHandler<LoginUserCommand, Result<LoginResponse>>
 {
-    public async Task<Result<LoginResponse>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result<LoginResponse>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
     {
         var user = await dbContext.Users
-            .FirstOrDefaultAsync(x => x.Email == request.email, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Email == command.Request.Email, cancellationToken);
 
-        if (user == null || !user.VerifyPassword(request.password))
+        if (user == null || !user.VerifyPassword(command.Request.Password))
             return Result<LoginResponse>.Failure("Incorrect password");
 
         var accessToken = jwtService.GenerateAccessToken(user.Id, user.Email, user.Role);
@@ -46,15 +46,14 @@ internal static class LoginUserEndpoint
 {
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/auth/sessions", async (LoginUserCommand request, IMediator mediator, CancellationToken ct) =>
+        app.MapPost("/api/auth/sessions", async (LoginRequest request, IMediator mediator, CancellationToken ct) =>
         {
             var loginResponse = await mediator
-                .Send(new LoginUserCommand(request.email, request.password), ct);
-            
-            if(!loginResponse.IsSuccess)
-                return Results.BadRequest(loginResponse.ErrorMessage);
-            
-            return Results.Ok(loginResponse.Value);
+                .Send(new LoginUserCommand(request), ct);
+
+            return loginResponse.IsSuccess
+                ? Results.Ok(loginResponse.Value)
+                : Results.BadRequest(loginResponse.ErrorMessage);
         });
     }
 }

@@ -1,12 +1,13 @@
+using Smart_Toury.Identity.Features.UpdateProfileFeature;
 using SmartToury.SharedKernel;
 
 namespace Smart_Toury.Identity.Domain.Users;
 
 internal class TouristProfile
 {
-    public Guid Id { get; private set; }
+    public Guid ProfileId { get; private set; }
     public Guid UserId { get; private set; }
-    public string Name { get; private set; }
+    public string Name { get; internal set; }
     public DateTime CreatedAt { get; private set; }
 
     public int CompletedTours { get; private set; }
@@ -21,13 +22,21 @@ internal class TouristProfile
     private TouristProfile() { } // Для EF Core
 
     public static TouristProfile Create(Guid userId, DateTime registeredAt, string name) => new(){
-        Id = Guid.NewGuid(),
+        ProfileId = Guid.NewGuid(),
         UserId = userId,
         CreatedAt = registeredAt,
         Name = name,
         Stats = new TouristTravelStats(),
         Preferences = new  TouristPreferences(),
     };
+
+    public void Update(string name, AccessibilityMode accessibility, RouteAtmosphere atmosphere, bool receiveNotifications)
+    {
+        Name = name;
+        Preferences.AccessibilityMode = accessibility;
+        Preferences.RouteAtmosphere = atmosphere;
+        Preferences.ReceiveDiscountNotifications = receiveNotifications;
+    }
 
     //TODO: слушать событие при завершении тура обновлять стастику
 }

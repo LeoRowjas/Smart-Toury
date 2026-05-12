@@ -13,14 +13,16 @@ namespace Smart_Toury.Identity.Features.GetProfile;
 internal record GetGuideProfileCommand() : IRequest<Result<GuideProfile>>;
 
 
-internal class GetGuideProfileFeature(IdentityDbContext db, IHttpContextAccessor httpContextAccessor, JwtTokenService jwtService) 
+internal class GetGuideProfileFeature(IdentityDbContext db, ICurrentUser currentUser, JwtTokenService jwtService) 
     : IRequestHandler<GetGuideProfileCommand, Result<GuideProfile>>
 {
     public async Task<Result<GuideProfile>> Handle(GetGuideProfileCommand request, CancellationToken cancellationToken)
     {
-        var userId = jwtService.GetUserId(httpContextAccessor.HttpContext!.User);
+        var userId = currentUser.UserId;
         if (!db.Users.Any(u => userId == u.Id))
             return Result<GuideProfile>.Failure("User not found");
+        if(db.Users.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken).Result!.Role != UserRole.Guide)
+            return Result<GuideProfile>.Failure("User is not guide");
 
         var guideProfile = await db.GuideProfiles
             .AsNoTracking()

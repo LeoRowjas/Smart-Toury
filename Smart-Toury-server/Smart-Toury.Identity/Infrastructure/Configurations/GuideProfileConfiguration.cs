@@ -8,7 +8,7 @@ internal class GuideProfileConfiguration : IEntityTypeConfiguration<GuideProfile
 {
     public void Configure(EntityTypeBuilder<GuideProfile> builder)
     {
-        builder.HasKey(g => g.Id);
+        builder.HasKey(g => g.ProfileId);
         
         builder.HasOne<User>()
             .WithOne()

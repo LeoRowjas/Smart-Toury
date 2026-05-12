@@ -8,7 +8,7 @@ internal class TouristProfileConfiguration : IEntityTypeConfiguration<TouristPro
 {
     public void Configure(EntityTypeBuilder<TouristProfile> builder)
     {
-        builder.HasKey(g => g.Id);
+        builder.HasKey(g => g.ProfileId);
         
         builder.HasOne<User>()
             .WithOne()

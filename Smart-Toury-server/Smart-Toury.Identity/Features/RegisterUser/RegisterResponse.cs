@@ -1,6 +1,6 @@
 namespace Smart_Toury.Identity.Features.RegisterUser;
 
-internal class RegisterResponse
+internal record RegisterResponse
 {
     public Guid UserId { get; init; }
     public string AccessToken { get; init; }

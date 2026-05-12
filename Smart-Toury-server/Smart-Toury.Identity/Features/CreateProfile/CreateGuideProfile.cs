@@ -14,7 +14,7 @@ internal class CreateGuideProfile(IdentityDbContext db) : INotificationHandler<U
             return;
         
         var guide = GuideProfile.Create(notification.UserId, notification.Name);
-        await db.AddAsync(guide, cancellationToken);
+        db.GuideProfiles.Add(guide);
         await db.SaveChangesAsync(cancellationToken);
     }
 }

@@ -1,17 +1,15 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Smart_Toury.Identity.Features.GetProfile;
 using Smart_Toury.Identity.Features.LoginUser;
 using Smart_Toury.Identity.Features.RegisterUser;
 using Smart_Toury.Identity.Features.RefreshSession;
+using Smart_Toury.Identity.Features.UpdateProfileFeature;
 using Smart_Toury.Identity.Infrastructure;
+using SmartToury.SharedKernel;
 
 namespace Smart_Toury.Identity;
 
@@ -28,6 +26,7 @@ public static class IdentityModule
             o.UseNpgsql(cfg.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<JwtTokenService>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
         
         return services;
     }
@@ -39,6 +38,8 @@ public static class IdentityModule
         RefreshSessionEndpoint.MapEndpoint(app);
         GetTouristProfileEndpoint.MapEndpoint(app);
         GetGuideProfileEndpoint.MapEndpoint(app);
+        UpdateTouristProfileEndpoint.MapEndpoint(app);
+        UpdateGuideProfileEndpoint.MapEndpoint(app);
         
         return app;
     }

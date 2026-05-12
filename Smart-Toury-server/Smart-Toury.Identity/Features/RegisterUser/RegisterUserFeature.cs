@@ -11,25 +11,25 @@ using SmartToury.SharedKernel;
 
 namespace Smart_Toury.Identity.Features.RegisterUser;
 
-internal record RegisterUserCommand(string Email, string Name, string Password, UserRole Role) 
+internal record RegisterUserCommand(RegisterRequest Request) 
     : IRequest<Result<RegisterResponse>>;
 
 internal class RegisterUserHandler(IdentityDbContext db, JwtTokenService jwtService, IMediator mediator)
     : IRequestHandler<RegisterUserCommand, Result<RegisterResponse>>
 {
-    public async Task<Result<RegisterResponse>> Handle(RegisterUserCommand request, CancellationToken ct)
+    public async Task<Result<RegisterResponse>> Handle(RegisterUserCommand command, CancellationToken ct)
     {
-        if (await db.Users.AnyAsync(x => x.Email == request.Email, ct))
+        if (await db.Users.AnyAsync(x => x.Email == command.Request.Email, ct))
             return Result<RegisterResponse>.Failure("Email already in use");
 
         User user;
-        switch (request.Role)
+        switch (command.Request.Role)
         {
             case UserRole.Guide:
-                user = User.CreateGuide(request.Email, request.Name, request.Password);
+                user = User.CreateGuide(command.Request.Email, command.Request.Name, command.Request.Password);
                 break;
             case UserRole.Tourist:
-                user = User.CreateTourist(request.Email, request.Name, request.Password);
+                user = User.CreateTourist(command.Request.Email, command.Request.Name, command.Request.Password);
                 break;
             case UserRole.Admin:
             default:
@@ -61,8 +61,9 @@ internal static class RegisterUserEndpoint
 {
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/users", async (RegisterUserCommand command, IMediator mediator, CancellationToken ct) =>
+        app.MapPost("/api/users", async (RegisterRequest request, IMediator mediator, CancellationToken ct) =>
         {
+            var command = new RegisterUserCommand(request);
             var registerResponse = await mediator.Send(command, ct);
             if (!registerResponse.IsSuccess)
                 return Results.BadRequest(registerResponse.ErrorMessage);

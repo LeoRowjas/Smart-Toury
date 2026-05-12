@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -46,5 +47,15 @@ internal class JwtTokenService(IConfiguration configuration)
             ?? throw new InvalidOperationException("User id claim not found");
         
         return Guid.Parse(id);
+    }
+
+    public UserRole GetUserRole(ClaimsPrincipal principal)
+    {
+        var roleAsString = principal.Claims
+            .FirstOrDefault(c => c.Type == ClaimTypes.Role)?
+            .Value;
+
+        var parseResult = Enum.TryParse(roleAsString, out UserRole roleValue);
+        return parseResult ?  roleValue : throw new InvalidOperationException("User role not found");
     }
 }

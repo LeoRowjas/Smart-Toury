@@ -15,7 +15,7 @@ internal class CreateTouristProfileFeature(IdentityDbContext db) : INotification
             return;
         
         var tourist = TouristProfile.Create(notification.UserId, notification.CreatedAt, notification.Name);
-        await db.AddAsync(tourist, cancellationToken);
+        db.TouristProfiles.Add(tourist);
         await db.SaveChangesAsync(cancellationToken);
     }
 }

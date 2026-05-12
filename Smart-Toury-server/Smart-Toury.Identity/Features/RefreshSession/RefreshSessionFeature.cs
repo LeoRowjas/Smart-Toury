@@ -52,10 +52,13 @@ internal static class RefreshSessionEndpoint
 {
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/auth/refresh", async (RefreshSessionCommand request, IMediator mediator, CancellationToken ct) =>
+        app.MapPost("/api/auth/refresh", async (string refreshToken, IMediator mediator, CancellationToken ct) =>
         {
-            var response = await mediator.Send(request, ct);
-            return !response.IsSuccess ? Results.BadRequest(response.ErrorMessage) : Results.Ok(response.Value);
+            var command = new RefreshSessionCommand(refreshToken);
+            var response = await mediator.Send(command, ct);
+            return response.IsSuccess 
+                ? Results.Ok(response.Value)
+                : Results.BadRequest(response.ErrorMessage);
         });
     }
 }
