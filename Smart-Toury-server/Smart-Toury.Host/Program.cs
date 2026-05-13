@@ -1,13 +1,13 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 
-namespace Smart_Toury.Host;
-
 using Smart_Toury.Identity;
+using Smart_Toury.Tours;
 using Smart_Toury.Host.Extensions;
+
+namespace Smart_Toury.Host;
 
 public class Program
 {
@@ -17,6 +17,7 @@ public class Program
         
         #region MODULES REGISTRATION
         builder.Services.AddIdentityModule(builder.Configuration);
+        builder.Services.AddToursModule(builder.Configuration);
         #endregion
 
         builder.Services.AddAuthentication(options =>
@@ -56,6 +57,18 @@ public class Program
         });
         
         builder.Services.AddAuthorization();
+
+        builder.Services.AddCors(x =>
+        {
+            x.AddDefaultPolicy(policy =>
+            {
+                policy.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
+        });
+        
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
@@ -95,11 +108,14 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseCors();
+        
         app.UseAuthentication();
         app.UseAuthorization();
         
         #region MODULES CONNECTION
         app.MapIdentityModule();
+        app.MapToursModule();
         #endregion
         
         app.ApplyAllModulesMigrations();
