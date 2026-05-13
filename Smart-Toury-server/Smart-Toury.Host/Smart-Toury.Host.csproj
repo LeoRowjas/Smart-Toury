@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Smart-Toury.Identity\Smart-Toury.Identity.csproj" />
+      <ProjectReference Include="..\Smart-Toury.Tours\Smart-Toury.Tours.csproj" />
     </ItemGroup>
 
 </Project>

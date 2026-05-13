@@ -16,6 +16,5 @@ internal class IdentityDbContext(DbContextOptions<IdentityDbContext> options)
     {
         mb.HasDefaultSchema("identity");
         mb.ApplyConfigurationsFromAssembly(typeof(IdentityDbContext).Assembly);
-        
     }
 }

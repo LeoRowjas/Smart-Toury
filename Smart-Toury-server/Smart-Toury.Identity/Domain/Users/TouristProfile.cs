@@ -7,7 +7,7 @@ internal class TouristProfile
 {
     public Guid ProfileId { get; private set; }
     public Guid UserId { get; private set; }
-    public string Name { get; internal set; }
+    public string Name { get; internal set; } = null!;
     public DateTime CreatedAt { get; private set; }
 
     public int CompletedTours { get; private set; }

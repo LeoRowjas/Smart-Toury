@@ -11,14 +11,13 @@ using SmartToury.SharedKernel;
 namespace Smart_Toury.Identity.Features.GetProfile;
 
 
-internal record GetTouristProfileCommand() : IRequest<Result<TouristProfile>>;
+internal record GetTouristProfileQuery() : IRequest<Result<TouristProfile>>;
 
-
-internal class GetTouristProfileFeature(IdentityDbContext db, ICurrentUser currentUser, JwtTokenService jwtService) 
-    : IRequestHandler<GetTouristProfileCommand, Result<TouristProfile>>
+internal class GetTouristProfileQueryHandler(IdentityDbContext db, ICurrentUser currentUser, JwtTokenService jwtService) 
+    : IRequestHandler<GetTouristProfileQuery, Result<TouristProfile>>
 {
     public async Task<Result<TouristProfile>> Handle
-        (GetTouristProfileCommand request, CancellationToken cancellationToken)
+        (GetTouristProfileQuery request, CancellationToken cancellationToken)
     {
         var userId = currentUser.UserId;
         if(!db.Users.Any(u => u.Id == userId))
@@ -40,7 +39,7 @@ internal class GetTouristProfileEndpoint
     {
         app.MapGet("/api/tourists/me", async (IMediator mediator, CancellationToken ct) =>
         {
-            var profile = await mediator.Send(new GetTouristProfileCommand(), ct);
+            var profile = await mediator.Send(new GetTouristProfileQuery(), ct);
             return !profile.IsSuccess ? Results.BadRequest(profile.ErrorMessage) : Results.Ok(profile.Value);
         }).RequireAuthorization();
     }
