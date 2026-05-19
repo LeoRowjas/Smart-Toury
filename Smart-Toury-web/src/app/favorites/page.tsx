@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function FavoritesPage() {
   const FAVORITES = [
     {
@@ -85,10 +87,11 @@ export default function FavoritesPage() {
                 <p className="font-bold text-[#2C3E50] text-4xl">
                   {item.price}
                 </p>
-
-                <button className="bg-[#2D5A5A] text-2xl text-white text-xs px-4 py-1.5 rounded-lg">
-                  Забронировать
-                </button>
+                <Link href={`/tours/${i}`}>
+                  <button className="bg-[#2D5A5A] text-2xl text-white text-xs px-4 py-1.5 rounded-lg">
+                    Забронировать
+                  </button>
+                </Link>
               </div>
 
             </div>

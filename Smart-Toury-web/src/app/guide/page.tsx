@@ -5,9 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link'
 import { Star } from "lucide-react";
 //import { Header } from "@/components/layout/Header";
+import EditProfileModal from "@/components/modals/EditProfileModal";
 type Tab = "tours" | "reviews";
 export default function GuidePage() {
   const [activeTab, setActiveTab] = useState<Tab>("tours");
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   return (
     <div className="">
@@ -105,13 +107,25 @@ export default function GuidePage() {
       </div>
       {/* CONTENT */}
       <div className=" w-[1857] mx-auto">
-        {activeTab === "tours" ? <Tours /> : <Reviews />}
+        {activeTab === "tours" ? (
+        <Tours onOpenEdit={() => setIsEditOpen(true)} />
+      ) : (
+        <Reviews />
+      )}
       </div>
+      <EditProfileModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+      />
     </div>
   );
 }
 
-function Tours() {
+function Tours({
+  onOpenEdit,
+}: {
+  onOpenEdit: () => void;
+}) {
   return (
     <div className="w-[1857]">
       <div className=" bg-linear-to-r from-[#FFF3E0] to-[#FFE7C3] rounded-2xl px-4 py-3.5">
@@ -230,7 +244,10 @@ function Tours() {
                 <p className="text-xs text-gray-400 leading-tight mt-0.5">Информация для гостей</p>
               </div>
             </div>
-            <button className="text-sm text-blue-500 hover:text-blue-700 font-normal whitespace-nowrap mt-0.5">
+            <button
+              onClick={onOpenEdit}
+              className="text-sm text-blue-500 hover:text-blue-700"
+            >
               Редактировать →
             </button>
           </div>
@@ -288,6 +305,7 @@ function Tours() {
  
       </div>
     </div>
+    
     </div>
   );
 }

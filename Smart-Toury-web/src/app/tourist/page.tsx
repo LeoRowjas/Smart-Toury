@@ -2,11 +2,18 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import BookingCancelPopups from "@/components/modals/CancelBookingModal";
+
 export default function TouristPage() {
 
-    
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
+    
     <div className="bg-gray-100 min-h-screen pb-8">
+
+      <BookingCancelPopups isOpen={isOpen} onClose={() => setIsOpen(false)} />
+
       <div className="bg-gradient-to-r from-[#2D5A5A] to-[#234848] h-[301px] text-white p-6 rounded-2xl flex items-center gap-5">
 
         <div className="w-24 h-24 rounded-full bg-[#3a7070] flex items-center justify-center text-3xl font-bold flex-shrink-0">
@@ -140,6 +147,7 @@ export default function TouristPage() {
         <Section title="МОИ БРОНИРОВАНИЯ" badge="3">
           <div className="space-y-3">
             <BookingCard
+            chatId={0}
               color="bg-gradient-to-br from-emerald-600 to-teal-700"
               label="Moscow"
               title="Исторический центр Москвы"
@@ -147,8 +155,10 @@ export default function TouristPage() {
               price="2500 ₽"
               status="Подтверждено"
               statusColor="text-emerald-600"
+              onCancel={() => setIsOpen(true)}
             />
             <BookingCard
+              chatId={1}
               color="bg-gradient-to-br from-slate-500 to-slate-700"
               label="Peterhof"
               title="Петергоф и фонтаны"
@@ -156,8 +166,10 @@ export default function TouristPage() {
               price="3500 ₽"
               status="Сегодня"
               statusColor="text-orange-500"
+              onCancel={() => setIsOpen(true)}
             />
             <BookingCard
+              chatId={2}
               color="bg-gradient-to-br from-sky-600 to-indigo-700"
               label="SPB"
               title="Ночной Санкт-Петербург"
@@ -165,6 +177,7 @@ export default function TouristPage() {
               price="2000 ₽"
               status="Подтверждено"
               statusColor="text-emerald-600"
+              onCancel={() => setIsOpen(true)}
             />
           </div>
         </Section>
@@ -242,32 +255,44 @@ function StatCard({ icon, value, label }: { icon: string; value: string; label: 
 }
 
 function BookingCard({
+  color,
   label,
   title,
   date,
   price,
   status,
+  onCancel,
+  chatId,
 }: {
+  color: string;
   label: string;
   title: string;
   date: string;
   price: string;
   status: string;
+  onCancel: () => void;
+  chatId: number;
 }) {
   return (
+
+    
     <div className="bg-white rounded-xl border border-gray-200 p-4 flex justify-between items-center">
 
       {/* LEFT */}
       <div className="flex items-center gap-4">
-        <div className="w-40 h-22 bg-[#2D5A5A] text-white flex items-center justify-center rounded-lg font-medium">
+        <div
+          className={`w-40 h-22 ${color} text-white flex items-center justify-center rounded-lg font-medium`}
+        >
           {label}
         </div>
 
         <div>
           <p className="font-semibold text-[#2C3E50]">{title}</p>
+
           <p className="text-sm text-gray-500 mt-1">
             📅 {date}
           </p>
+
           <p className="text-lg font-semibold text-[#2D5A5A] mt-1">
             {price}
           </p>
@@ -284,10 +309,18 @@ function BookingCard({
           <button className="px-3 py-1 text-sm bg-gray-100 rounded">
             Детали
           </button>
-          <button className="px-3 py-1 text-sm bg-[#2D5A5A] text-white rounded">
+
+          <Link
+            href={`/chat/${chatId}`}
+            className="px-3 py-1 text-sm bg-[#2D5A5A] text-white rounded"
+          >
             Связаться с гидом
-          </button>
-          <button className="px-3 py-1 text-sm bg-red-100 text-red-500 rounded">
+          </Link>
+
+          <button
+            onClick={onCancel}
+            className="px-3 py-1 text-sm bg-red-100 text-red-500 rounded"
+          >
             Отменить
           </button>
         </div>
