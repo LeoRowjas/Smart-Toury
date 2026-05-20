@@ -19,9 +19,12 @@ export default function BottomNavbar() {
     <>
       {pathname === "/guide" && (
         <div className="fixed bottom-[70px] left-0 w-full px-4 z-50">
-          <button className="w-full bg-yellow-400 text-black py-2 rounded-lg shadow-md text-sm font-medium">
+          <Link
+            href="/guide/create-tour"
+            className="block w-full bg-yellow-400 text-black py-2 rounded-lg shadow-md text-sm font-medium text-center"
+          >
             ✨ Создать новый тур за 5 минут
-          </button>
+          </Link>
         </div>
       )}
 
