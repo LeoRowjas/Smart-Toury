@@ -25,3 +25,26 @@ export async function registerUser(data: {
 
   return response.json();
 }
+
+export async function loginUser(data: {
+  email: string;
+  password: string;
+}) {
+  const response = await fetch(`${API_URL}/api/auth/sessions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: data.email,
+      password: data.password,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(error || "Ошибка входа");
+  }
+
+  return response.json();
+}

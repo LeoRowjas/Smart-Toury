@@ -154,7 +154,7 @@ export default function TouristPage() {
               date="23 января 2024 · 11:05 · Маша Петрова"
               price="2500 ₽"
               status="Подтверждено"
-              statusColor="text-emerald-600"
+              //statusColor="text-emerald-600"
               onCancel={() => setIsOpen(true)}
             />
             <BookingCard
@@ -165,7 +165,7 @@ export default function TouristPage() {
               date="25 января 2024 · 11:00 · Иван Сидоров"
               price="3500 ₽"
               status="Сегодня"
-              statusColor="text-orange-500"
+              //statusColor="text-orange-500"
               onCancel={() => setIsOpen(true)}
             />
             <BookingCard
@@ -176,7 +176,7 @@ export default function TouristPage() {
               date="28 января 2024 · 21:08 · Дима Козлов"
               price="2000 ₽"
               status="Подтверждено"
-              statusColor="text-emerald-600"
+              //statusColor="text-emerald-600"
               onCancel={() => setIsOpen(true)}
             />
           </div>

@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { Header } from "@/components/layout/Header";
+import { loginUser } from "@/lib/api/auth";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -19,15 +20,22 @@ export default function page() {
       setLoading(true);
       setError("");
 
-      console.log({
+      const result = await loginUser({
         email,
         password,
       });
 
+      console.log(result);
+
+      localStorage.setItem("accessToken", result.accessToken);
+      localStorage.setItem("refreshToken", result.refreshToken);
+      localStorage.setItem("expiresAt", result.expiresAt);
+
       router.push("/tourist");
 
     } catch (err: any) {
-      setError("Ошибка входа");
+      console.error(err);
+      setError(err.message || "Ошибка входа");
     } finally {
       setLoading(false);
     }
