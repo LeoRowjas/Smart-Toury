@@ -3,9 +3,11 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import BookingCancelPopups from "@/components/modals/CancelBookingModal";
+import EditProfileModal from "@/components/modals/EditProfileModal";
 
 export default function TouristPage() {
 
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -13,7 +15,10 @@ export default function TouristPage() {
     <div className="bg-gray-100 min-h-screen pb-8">
 
       <BookingCancelPopups isOpen={isOpen} onClose={() => setIsOpen(false)} />
-
+      <EditProfileModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+      />
       <div className="bg-gradient-to-r from-[#2D5A5A] to-[#234848] h-[301px] text-white p-6 rounded-2xl flex items-center gap-5">
 
         <div className="w-24 h-24 rounded-full bg-[#3a7070] flex items-center justify-center text-3xl font-bold flex-shrink-0">
@@ -25,7 +30,7 @@ export default function TouristPage() {
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-semibold">Анна Михайлова</h2>
 
-            <button className="text-xs bg-emerald-500 px-3 py-1 rounded-full font-medium hover:bg-emerald-600 transition">
+            <button onClick={() => setIsEditOpen(true)} className="text-xs bg-emerald-500 px-3 py-1 rounded-full font-medium hover:bg-emerald-600 transition">
               Редактировать
             </button>
           </div>

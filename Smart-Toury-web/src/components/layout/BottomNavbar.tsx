@@ -17,7 +17,8 @@ export default function BottomNavbar() {
 
   return (
     <>
-      {pathname === "/guide" && (
+      {(pathname === "/guide" ||
+        pathname === "/guide/all-tours") && (
         <div className="fixed bottom-[70px] left-0 w-full px-4 z-50">
           <Link
             href="/guide/create-tour"

@@ -14,7 +14,7 @@ export default function GuidePage() {
   return (
     <div className="">
       
-      <div className="bg-gradient-to-r from-[#2D5A5A] to-[#234848] h-[301px] text-white p-6 rounded-2xl flex items-center gap-5">
+      <div className="bg-gradient-to-r from-[#2D5A5A] to-[#234848] h-[301px] text-white p-6 flex items-center gap-5">
 
         <div className="w-24 h-24 rounded-full bg-[#3a7070] flex items-center justify-center text-3xl font-bold flex-shrink-0">
           Д
@@ -25,7 +25,7 @@ export default function GuidePage() {
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-semibold">Дмитрий Соколов</h2>
 
-            <button className="text-xs bg-[#FFFFFF50] px-3 py-1 rounded-full font-medium hover:bg-emerald-600 transition">
+            <button onClick={() => setIsEditOpen(true)} className="text-xs bg-[#FFFFFF50] px-3 py-1 rounded-full font-medium hover:bg-emerald-600 transition">
               Редактировать
             </button>
           </div>
@@ -152,9 +152,9 @@ function Tours({
           </div>
       </div>
 
-      <div className="flex justify-between">
+      <div className="flex justify-between my-2">
         <span>Aктивные туры</span>
-        <Link href="/" className="flex justify-between gap-1.5">Все <p>34</p> →</Link>
+        <Link href="/guide/all-tours" className="flex justify-between gap-1.5">Все <p>34</p> → </Link>
       </div>
 
       <div className="p-4 font-sans">
@@ -245,7 +245,6 @@ function Tours({
               </div>
             </div>
             <button
-              onClick={onOpenEdit}
               className="text-sm text-blue-500 hover:text-blue-700"
             >
               Редактировать →
