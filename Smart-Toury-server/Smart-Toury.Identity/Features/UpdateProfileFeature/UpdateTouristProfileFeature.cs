@@ -50,6 +50,7 @@ internal class UpdateTouristProfileEndpoint
                 var command = new UpdateTouristProfileCommand(request);
                 var profile = await mediator.Send(command, cancellationToken);
                 return profile.IsSuccess ? Results.Ok(profile.Value) : Results.BadRequest(profile.ErrorMessage);
-            }).RequireAuthorization();
+            }
+        ).RequireAuthorization("Tourist");
     }
 }

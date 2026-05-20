@@ -17,8 +17,6 @@ public static class IdentityModule
 {
     public static IServiceCollection AddIdentityModule(this IServiceCollection services, IConfiguration cfg)
     {
-        services.AddHttpContextAccessor();
-        
         services.AddMediatR(config => 
             config.RegisterServicesFromAssembly(typeof(IdentityModule).Assembly));
         
@@ -26,7 +24,6 @@ public static class IdentityModule
             o.UseNpgsql(cfg.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<JwtTokenService>();
-        services.AddScoped<ICurrentUser, CurrentUser>();
         
         return services;
     }

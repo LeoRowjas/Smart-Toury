@@ -19,6 +19,7 @@ public class Program
         builder.Services.AddIdentityModule(builder.Configuration);
         builder.Services.AddToursModule(builder.Configuration);
         #endregion
+        builder.Services.AddCurrentUser();
 
         builder.Services.AddAuthentication(options =>
         {
@@ -28,35 +29,32 @@ public class Program
         {
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidateIssuer = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                
+                ValidateAudience = true,
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                
                 ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!))
             };
-            
-            options.Events = new JwtBearerEvents
-            {
-                OnAuthenticationFailed = context =>
-                {
-                    Console.WriteLine($"JWT ОШИБКА: {context.Exception.Message}");
-                    return Task.CompletedTask;
-                },
-                OnTokenValidated = context =>
-                {
-                    Console.WriteLine("JWT УСПЕХ: токен валиден");
-                    return Task.CompletedTask;
-                },
-                OnChallenge = context =>
-                {
-                    Console.WriteLine($"JWT CHALLENGE: {context.Error} - {context.ErrorDescription}");
-                    return Task.CompletedTask;
-                }
-            };
         });
         
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization(x =>
+        {
+            x.AddPolicy("Guide", policy =>
+                policy.RequireRole("Guide"));
+            
+            x.AddPolicy("Admin", policy => 
+                policy.RequireRole("Admin"));
+            
+            x.AddPolicy("Tourist", policy =>
+                policy.RequireRole("Tourist"));
+        });
 
         builder.Services.AddCors(x =>
         {
@@ -98,6 +96,9 @@ public class Program
             });
         });
         
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
+        
         var app = builder.Build();
         
         if (app.Environment.IsDevelopment())
@@ -105,6 +106,8 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+        
+        app.UseExceptionHandler();
 
         app.UseHttpsRedirection();
 

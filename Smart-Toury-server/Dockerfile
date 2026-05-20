@@ -10,6 +10,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Smart-Toury.Host/Smart-Toury.Host.csproj", "Smart-Toury.Host/"]
 COPY ["Smart-Toury.Identity/Smart-Toury.Identity.csproj", "Smart-Toury.Identity/"]
+COPY ["Smart-Toury.Tours/Smart-Toury.Tours.csproj", "Smart-Toury.Tours/"]
 COPY ["SmartToury.SharedKernel/SmartToury.SharedKernel.csproj", "SmartToury.SharedKernel/"]
 RUN dotnet restore "./Smart-Toury.Host/Smart-Toury.Host.csproj"
 COPY . .

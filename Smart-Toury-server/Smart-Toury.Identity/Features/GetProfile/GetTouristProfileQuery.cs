@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +12,7 @@ namespace Smart_Toury.Identity.Features.GetProfile;
 
 internal record GetTouristProfileQuery() : IRequest<Result<TouristProfile>>;
 
-internal class GetTouristProfileQueryHandler(IdentityDbContext db, ICurrentUser currentUser, JwtTokenService jwtService) 
+internal class GetTouristProfileQueryHandler(IdentityDbContext db, ICurrentUser currentUser) 
     : IRequestHandler<GetTouristProfileQuery, Result<TouristProfile>>
 {
     public async Task<Result<TouristProfile>> Handle
@@ -22,14 +21,12 @@ internal class GetTouristProfileQueryHandler(IdentityDbContext db, ICurrentUser 
         var userId = currentUser.UserId;
         if(!db.Users.Any(u => u.Id == userId))
             return Result<TouristProfile>.Failure("User not found");
-        if(db.Users.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken).Result!.Role != UserRole.Tourist)
-            return Result<TouristProfile>.Failure("User is not tourist");
         
         var profile = await db.TouristProfiles
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.UserId == userId, cancellationToken);
         
-        return Result<TouristProfile>.Success(profile);
+        return Result<TouristProfile>.Success(profile!);
     }
 }
 
@@ -38,9 +35,10 @@ internal class GetTouristProfileEndpoint
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("/api/tourists/me", async (IMediator mediator, CancellationToken ct) =>
-        {
-            var profile = await mediator.Send(new GetTouristProfileQuery(), ct);
-            return !profile.IsSuccess ? Results.BadRequest(profile.ErrorMessage) : Results.Ok(profile.Value);
-        }).RequireAuthorization();
+            {
+                var profile = await mediator.Send(new GetTouristProfileQuery(), ct);
+                return !profile.IsSuccess ? Results.BadRequest(profile.ErrorMessage) : Results.Ok(profile.Value);
+            }
+        ).RequireAuthorization("Tourist");
     }
 }

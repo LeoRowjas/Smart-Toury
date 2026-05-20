@@ -12,7 +12,7 @@ namespace Smart_Toury.Identity.Features.GetProfile;
 
 internal record GetGuideProfileQuery() : IRequest<Result<GuideProfile>>;
 
-internal class GetGuideProfileQueryHandler(IdentityDbContext db, ICurrentUser currentUser, JwtTokenService jwtService) 
+internal class GetGuideProfileQueryHandler(IdentityDbContext db, ICurrentUser currentUser) 
     : IRequestHandler<GetGuideProfileQuery, Result<GuideProfile>>
 {
     public async Task<Result<GuideProfile>> Handle(GetGuideProfileQuery request, CancellationToken cancellationToken)
@@ -20,8 +20,6 @@ internal class GetGuideProfileQueryHandler(IdentityDbContext db, ICurrentUser cu
         var userId = currentUser.UserId;
         if (!db.Users.Any(u => userId == u.Id))
             return Result<GuideProfile>.Failure("User not found");
-        if(db.Users.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken).Result!.Role != UserRole.Guide)
-            return Result<GuideProfile>.Failure("User is not guide");
 
         var guideProfile = await db.GuideProfiles
             .AsNoTracking()
@@ -36,9 +34,10 @@ internal class GetGuideProfileEndpoint()
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("/api/guides/me", async (IMediator mediator, CancellationToken ct) =>
-        {
-            var profile = await mediator.Send(new GetGuideProfileQuery(), ct);
-            return !profile.IsSuccess ? Results.BadRequest(profile.ErrorMessage) : Results.Ok(profile.Value);
-        }).RequireAuthorization();
+            {
+                var profile = await mediator.Send(new GetGuideProfileQuery(), ct);
+                return !profile.IsSuccess ? Results.BadRequest(profile.ErrorMessage) : Results.Ok(profile.Value);
+            }
+        ).RequireAuthorization("Guide");
     }
 }
