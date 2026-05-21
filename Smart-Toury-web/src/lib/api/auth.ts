@@ -144,3 +144,30 @@ export async function createLocation(data: {
 
   return response.json();
 }
+
+export async function archiveTour(tourId: number | string) {
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) {
+    throw new Error("Вы не авторизованы");
+  }
+
+  if (!tourId) {
+    throw new Error("ID тура не указан");
+  }
+
+  const response = await fetch(`http://localhost:8080/api/tours/${tourId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    console.error("Ошибка сервера:", error);
+    throw new Error(error || "Ошибка архивации тура");
+  }
+
+  return response.json();
+}
