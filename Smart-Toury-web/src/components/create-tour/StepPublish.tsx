@@ -1,3 +1,15 @@
+interface StepPublishProps {
+  tourData: {
+    name: string;
+    description: string;
+    price: number;
+    durationMinutes: number;
+    distanceKm: number;
+  };
+
+  setTourData: React.Dispatch<React.SetStateAction<any>>;
+}
+
 const languages = [
   "🇷🇺 Русский",
   "🇬🇧 English",
@@ -5,7 +17,10 @@ const languages = [
   "🇫🇷 Français",
 ];
 
-export default function StepPublish() {
+export default function StepPublish({
+  tourData,
+  setTourData,
+}: StepPublishProps) {
   return (
     <div className="space-y-5">
 
@@ -43,6 +58,13 @@ export default function StepPublish() {
 
           <input
             type="number"
+            value={tourData.price}
+            onChange={(e) =>
+              setTourData((prev: any) => ({
+                ...prev,
+                price: Number(e.target.value),
+              }))
+            }
             placeholder="1200"
             className="h-[60px] rounded-2xl border-2 border-gray-200 px-5 outline-none focus:border-[#2D5A5A]"
           />

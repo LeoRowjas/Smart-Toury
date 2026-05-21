@@ -1,40 +1,46 @@
+"use client";
+
+import { useState } from "react";
 import RoutePoint from "./RoutePoint";
+import AddLocationModal from "../modals/AddLocationModal";
 
-const routePoints = [
-  {
-    title: "Меншиковский дворец",
-    type: "🏛️ Достопримечательность",
-    duration: "30 мин",
-  },
-  {
-    title: "Кофейня «ДоМо»",
-    type: "☕ Перерыв",
-    duration: "45 мин",
-    ai: true,
-  },
-  {
-    title: "Университетская набережная",
-    type: "🌳 Прогулка",
-    duration: "20 мин",
-  },
-];
+interface StepRouteProps {
+  routePoints?: any[];
+  onAddPoint?: (point: any) => void;
+}
 
-export default function StepRoute() {
+export default function StepRoute({ routePoints = [], onAddPoint }: StepRouteProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [points, setPoints] = useState(routePoints);
+
+  const handleAddLocation = (newLocation: any) => {
+    // Добавляем точку маршрута
+    const newPoint = {
+      id: newLocation.id,
+      title: newLocation.name,
+      type: "📍 Локация",
+      duration: "30 мин",
+      locationId: newLocation.id,
+    };
+
+    setPoints([...points, newPoint]);
+    
+    if (onAddPoint) {
+      onAddPoint(newPoint);
+    }
+    
+    alert(`Локация "${newLocation.name}" успешно добавлена!`);
+  };
+
   return (
     <div className="space-y-5">
-
       {/* MAP */}
       <div className="bg-white rounded-3xl p-6 shadow-sm">
         <p className="text-sm font-bold uppercase text-gray-400 mb-5">
           Маршрут на карте
         </p>
-
         <div className="h-[240px] rounded-3xl bg-gradient-to-br from-blue-100 to-blue-200 relative overflow-hidden">
-
-          {/* LINE */}
           <div className="absolute top-1/2 left-[15%] right-[15%] h-[5px] bg-[#2D5A5A] rounded-full" />
-
-          {/* DOTS */}
           {[15, 40, 65, 85].map((item) => (
             <div
               key={item}
@@ -47,10 +53,9 @@ export default function StepRoute() {
 
       {/* ROUTE BUILDER */}
       <div className="bg-[#F0F7F7] rounded-3xl p-5 space-y-5">
-
-        {routePoints.map((point, index) => (
+        {points.map((point, index) => (
           <RoutePoint
-            key={index}
+            key={point.id || index}
             index={index + 1}
             title={point.title}
             type={point.type}
@@ -60,7 +65,10 @@ export default function StepRoute() {
         ))}
 
         {/* ADD BUTTON */}
-        <button className="w-full h-[64px] rounded-2xl border-2 border-dashed border-[#2D5A5A] text-[#2D5A5A] font-semibold hover:bg-[#E6F0F0] transition">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="w-full h-[64px] rounded-2xl border-2 border-dashed border-[#2D5A5A] text-[#2D5A5A] font-semibold hover:bg-[#E6F0F0] transition"
+        >
           + Добавить точку вручную
         </button>
 
@@ -73,6 +81,12 @@ export default function StepRoute() {
           следующую локацию
         </button>
       </div>
+
+      <AddLocationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAdd={handleAddLocation}
+      />
     </div>
   );
 }

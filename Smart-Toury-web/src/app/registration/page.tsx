@@ -26,7 +26,7 @@ export default function RegisterPage() {
   const [confirm, setConfirm] = useState("");
   const [agree, setAgree] = useState(false);
   const [news, setNews] = useState(false);
-
+  const [isGuide, setIsGuide] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -46,6 +46,7 @@ export default function RegisterPage() {
         name,
         email,
         password,
+        role: isGuide ? 1 : 0,
       });
 
       console.log("Успешная регистрация:", result);
@@ -323,7 +324,58 @@ export default function RegisterPage() {
         </p>
       </div>
     </label>
+    <label
+      className={`flex items-start gap-3 mt-3 p-4 border rounded-xl cursor-pointer transition-colors duration-200 ${
+        isGuide
+          ? "bg-[#eef4f3] border-[#2D5A5A]"
+          : "bg-white border-gray-200"
+      }`}
+    >
+      <div
+        className={`mt-1 w-5 h-5 rounded flex items-center justify-center flex-shrink-0 transition-colors duration-200 ${
+          isGuide
+            ? "bg-[#2D5A5A] border-[#2D5A5A]"
+            : "border-2 border-gray-300"
+        }`}
+      >
+        {isGuide && (
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+            <path
+              d="M1 5l3.5 3.5L11 1"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </div>
 
+      <input
+        type="checkbox"
+        checked={isGuide}
+        onChange={() => setIsGuide(!isGuide)}
+        className="hidden"
+      />
+
+      <div>
+        <p
+          className={`font-medium ${
+            isGuide ? "text-[#2D5A5A]" : "text-gray-800"
+          }`}
+        >
+          Зарегистрироваться как гид
+        </p>
+
+        <p
+          className={`text-sm ${
+            isGuide ? "text-[#4F7A7A]" : "text-gray-500"
+          }`}
+        >
+          Вы сможете создавать собственные туры
+        </p>
+      </div>
+    </label>
     {error && (
       <p className="text-red-500 text-sm mt-4">
         {error}

@@ -4,71 +4,35 @@
 import Link from 'next/link'
 //import { Header } from "@/components/layout/Header";
 import { useState } from "react";
+import { useEffect } from "react";
+import { getMyTours } from "@/lib/api/auth";
 
 export default function AllToursPage() {
 
-  const [tours, setTours] = useState([
-  {
-    id: 1,
-    title: "Тихие дворы Васильевского",
-    subtitle: "Создан с помощью AI",
-    duration: "3 часа",
-    growth: "↑ 12% броней",
-    rating: "4.9",
-    income: "40.8к ₽",
-    gradient:
-      "from-violet-500 to-indigo-600",
-  },
+  const [tours, setTours] = useState<any[]>([]);
 
-  {
-    id: 2,
-    title: "Модерн и кофе",
-    subtitle: "Ручная сборка",
-    duration: "2.5 часа",
-    growth: "→ Стабильно",
-    rating: "4.8",
-    income: "28.5к ₽",
-    gradient:
-      "from-pink-400 to-rose-500",
-  },
+  useEffect(() => {
 
-  {
-    id: 3,
-    title: "Петербургские крыши",
-    subtitle: "Создан с помощью AI",
-    duration: "2 часа",
-    growth: "↑ 8% броней",
-    rating: "4.7",
-    income: "35.2к ₽",
-    gradient:
-      "from-cyan-400 to-teal-500",
-  },
-  {
-  id: 4,
-  title: "Новогодние ярмарки",
-  subtitle: "Черновик",
-  duration: "Не завершен",
-  growth: "Продолжить редактирование",
-  rating: "",
-  income: "",
-  gradient:
-    "from-gray-400 to-gray-500",
-  draft: true,
-},
+    const loadTours = async () => {
 
-{
-  id: 5,
-  title: "Классический Петербург",
-  subtitle: "В архиве",
-  duration: "3 часа",
-  growth: "Завершенный тур",
-  rating: "4.7",
-  income: "35.2к ₽",
-  gradient:
-    "from-gray-500 to-gray-700",
-  archived: true,
-},
-]);
+      try {
+
+        const data = await getMyTours();
+
+        console.log(data);
+
+        setTours(data);
+
+      } catch (err) {
+
+        console.error(err);
+
+      }
+    };
+
+    loadTours();
+
+  }, []);
 
   const deleteTour = (id: number) => {
   setTours((prev) =>
@@ -185,6 +149,11 @@ export default function AllToursPage() {
         {/* ── Tours block ── */}
         <div className=" gap-3 flex flex-col overflow-hidden">
 
+          {tours.length === 0 && (
+            <div className="bg-white rounded-2xl border border-gray-200 p-10 text-center text-gray-400">
+              У вас пока нет созданных туров
+            </div>
+          )}
           {tours.map((tour) => (
   <div
     key={tour.id}
@@ -202,13 +171,13 @@ export default function AllToursPage() {
     <div className="flex-1 min-w-0">
 
       <p className="text-sm font-semibold text-gray-900">
-        {tour.title}
+        {tour.name}
       </p>
 
       <div className="flex items-center gap-1 mt-0.5">
 
         <span className="text-[11px] text-gray-400">
-          {tour.subtitle}
+          AI тур
         </span>
 
         <span className="text-gray-300 text-[11px]">
@@ -216,7 +185,7 @@ export default function AllToursPage() {
         </span>
 
         <span className="text-[11px] text-gray-400">
-          {tour.duration}
+          2 часа
         </span>
 
       </div>
@@ -224,7 +193,7 @@ export default function AllToursPage() {
       <div className="flex items-center gap-3 mt-1">
 
         <span className="text-[11px] text-emerald-500 font-medium">
-          {tour.growth}
+          Популярный
         </span>
 
         <span className="flex items-center gap-0.5 text-[11px] text-gray-500">
@@ -232,11 +201,11 @@ export default function AllToursPage() {
             ★
           </span>
 
-          {tour.rating}
+          4.9
         </span>
 
         <span className="text-[11px] text-gray-500">
-          🔥 {tour.income}
+          🔥 {tour.price} ₽
         </span>
 
       </div>
