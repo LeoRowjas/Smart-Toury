@@ -29,15 +29,18 @@ internal static class DeleteTourEndpoint
 {
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("/api/tours", async (Guid id, IMediator mediator, CancellationToken ct) =>
-            {
-                var query = new DeleteTourQuery(id);
-                var response = await mediator.Send(query, ct);
-                
-                return response.Value
-                    ? Results.Ok(true)
-                    : Results.NotFound(response.ErrorMessage);
-            }
-        ).RequireAuthorization("Guide");
+        app.MapDelete("/api/tours/{id:guid}", async (Guid id, IMediator mediator, CancellationToken ct) =>
+                {
+                    var query = new DeleteTourQuery(id);
+                    var response = await mediator.Send(query, ct);
+
+                    return response.Value
+                        ? Results.Ok(true)
+                        : Results.NotFound(response.ErrorMessage);
+                }
+            ).RequireAuthorization("Guide")
+            .WithSummary("Архивирует тур")
+            .WithDescription(
+                "У модели Tour есть свойство IsArchived и соответственно через эндпоинт он делает его true. Чтобы нельзя было просто взять и удалить из БД тур на который записаны люди он просто перемещает его в архивные как в дизайн преокте некоторые туры помечены архивный и горят серым. Надо в таких турах сделать просто недоступной кнопку записи(На бекенде тоже сделюа невозможным запись)");
     } 
 }
